@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glue & You - Find Your Creative Community</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+        #root {
+            width: 100%;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState } = React;
+        const iconSize = window.innerWidth < 768 ? 16 : 18;
+        const { Heart, MapPin, Users, Sparkles, Search, Plus, Mail, Star } = {
+            Heart: (props) => <svg {...props} width={props.size || iconSize} height={props.size || iconSize} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>,
+            MapPin: (props) => <svg {...props} width={props.size || iconSize} height={props.size || iconSize} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>,
+            Users: (props) => <svg {...props} width={props.size || iconSize} height={props.size || iconSize} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>,
+            Sparkles: (props) => <svg {...props} width={props.size || iconSize} height={props.size || iconSize} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg>,
+            Search: (props) => <svg {...props} width={props.size || iconSize} height={props.size || iconSize} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>,
+            Plus: (props) => <svg {...props} width={props.size || iconSize} height={props.size || iconSize} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
+            Mail: (props) => <svg {...props} width={props.size || iconSize} height={props.size || iconSize} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>,
+            Star: (props) => <svg {...props} width={props.size || iconSize} height={props.size || iconSize} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        };
+
+        const GlueAndYouDemo = () => {
+            const [activeTab, setActiveTab] = useState('discover');
+            const [searchQuery, setSearchQuery] = useState('');
+            
+            const users = [
+                {
+                    id: 1,
+                    name: 'Sarah Mitchell',
+                    location: 'Berkeley, CA',
+                    distance: '0.5 mi',
+                    interests: ['Scrapbooking', 'Watercolor', 'Vintage Ephemera'],
+                    skillLevel: 'Intermediate',
+                    bio: 'I love vintage ephemera and watercolor techniques!',
+                    avatar: 'SM',
+                    matchScore: 98,
+                    recent: ['Completed a vintage travel journal', 'Hosted local scrapbook meetup'],
+                    color: '#ffd4d4'
+                },
+                {
+                    id: 2,
+                    name: 'Emily Chen',
+                    location: 'Berkeley, CA',
+                    distance: '0.8 mi',
+                    interests: ['Scrapbooking', 'Paper Crafts', 'Collage'],
+                    skillLevel: 'Advanced',
+                    bio: 'Digital scrapbooking meets traditional techniques',
+                    avatar: 'EC',
+                    matchScore: 95,
+                    recent: ['Started a monthly craft circle', 'Teaching paper marbling'],
+                    color: '#ffe4b5'
+                },
+                {
+                    id: 3,
+                    name: 'Maya Rodriguez',
+                    location: 'Oakland, CA',
+                    distance: '3.2 mi',
+                    interests: ['Macrame', 'Textile Arts', 'Natural Dyeing'],
+                    skillLevel: 'Intermediate',
+                    bio: 'Creating sustainable fiber art from natural materials',
+                    avatar: 'MR',
+                    matchScore: 87,
+                    recent: ['Launched plant-dye workshop series', 'Exhibited at local gallery'],
+                    color: '#d4e7d4'
+                },
+                {
+                    id: 4,
+                    name: 'Jordan Kim',
+                    location: 'San Francisco, CA',
+                    distance: '5.1 mi',
+                    interests: ['Bookbinding', 'Calligraphy', 'Paper Crafts'],
+                    skillLevel: 'Advanced',
+                    bio: 'Hand-bound journals and custom lettering',
+                    avatar: 'JK',
+                    matchScore: 82,
+                    recent: ['Published handmade journal tutorial', 'Opened Etsy shop'],
+                    color: '#e4d4ff'
+                }
+            ];
+
+            const craftTechniques = [
+                'Scrapbooking', 'Watercolor', 'Vintage Ephemera', 'Macrame', 
+                'Bookbinding', 'Paper Crafts', 'Collage', 'Calligraphy',
+                'Textile Arts', 'Natural Dyeing', 'Embroidery', 'Quilting'
+            ];
+
+            const localEvents = [
+                {
+                    title: 'Vintage Scrapbook Meetup',
+                    date: 'Dec 8, 2:00 PM',
+                    location: 'Local Arts Center, Berkeley',
+                    attendees: 12,
+                    interests: ['Scrapbooking', 'Vintage Ephemera']
+                },
+                {
+                    title: 'Watercolor Workshop',
+                    date: 'Dec 10, 10:00 AM',
+                    location: 'Community Studio, Oakland',
+                    attendees: 8,
+                    interests: ['Watercolor', 'Paper Crafts']
+                },
+                {
+                    title: 'Craft Night & Share',
+                    date: 'Dec 12, 6:00 PM',
+                    location: "Sarah's Studio, Berkeley",
+                    attendees: 6,
+                    interests: ['Scrapbooking', 'Collage']
+                }
+            ];
+
+            return (
+                <div style={{
+                    minHeight: '100vh',
+                    background: 'linear-gradient(135deg, #fef6f0 0%, #fff5f0 50%, #fef0f5 100%)',
+                    fontFamily: "'Crimson Pro', 'Georgia', serif",
+                    position: 'relative',
+                    overflow: 'hidden'
+                }}>
+                    <div style={{
+                        position: 'fixed',
+                        top: '-20%',
+                        right: '-10%',
+                        width: '40%',
+                        height: '60%',
+                        background: 'radial-gradient(circle, rgba(255,212,212,0.2) 0%, transparent 70%)',
+                        borderRadius: '50%',
+                        pointerEvents: 'none',
+                        filter: 'blur(60px)'
+                    }} />
+                    <div style={{
+                        position: 'fixed',
+                        bottom: '-20%',
+                        left: '-10%',
+                        width: '40%',
+                        height: '60%',
+                        background: 'radial-gradient(circle, rgba(212,231,212,0.2) 0%, transparent 70%)',
+                        borderRadius: '50%',
+                        pointerEvents: 'none',
+                        filter: 'blur(60px)'
+                    }} />
+
+                    <header style={{
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        backdropFilter: 'blur(20px)',
+                        borderBottom: '3px solid #f4e4d7',
+                        padding: '1.5rem 2rem',
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 100,
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+                    }}>
+                        <div style={{
+                            maxWidth: '1400px',
+                            margin: '0 auto',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            flexWrap: 'wrap',
+                            gap: '1rem'
+                        }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <div style={{
+                                    width: '50px',
+                                    height: '50px',
+                                    background: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+                                    borderRadius: '12px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontFamily: "'Playfair Display', serif",
+                                    fontSize: '28px',
+                                    fontWeight: 'bold',
+                                    color: '#fff',
+                                    boxShadow: '0 4px 15px rgba(255,154,158,0.3)',
+                                    transform: 'rotate(-5deg)'
+                                }}>
+                                    G
+                                </div>
+                                <div>
+                                    <h1 style={{
+                                        margin: 0,
+                                        fontSize: window.innerWidth < 768 ? '24px' : '32px',
+                                        fontFamily: "'Playfair Display', serif",
+                                        color: '#5d4e37',
+                                        letterSpacing: '-0.5px'
+                                    }}>
+                                        Glue & You
+                                    </h1>
+                                    <p style={{
+                                        margin: 0,
+                                        fontSize: '13px',
+                                        color: '#a0826d',
+                                        fontFamily: "'Inter', sans-serif",
+                                        letterSpacing: '1px'
+                                    }}>
+                                        Find Your Creative Community
+                                    </p>
+                                </div>
+                            </div>
+
+                            <nav style={{ display: 'flex', gap: '2rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                                {['discover', 'events', 'matches'].map(tab => (
+                                    <button
+                                        key={tab}
+                                        onClick={() => setActiveTab(tab)}
+                                        style={{
+                                            background: activeTab === tab ? '#ffd4d4' : 'transparent',
+                                            border: 'none',
+                                            padding: '0.75rem 1.5rem',
+                                            borderRadius: '20px',
+                                            cursor: 'pointer',
+                                            fontSize: '15px',
+                                            fontFamily: "'Inter', sans-serif",
+                                            fontWeight: activeTab === tab ? '600' : '400',
+                                            color: activeTab === tab ? '#5d4e37' : '#8b7355',
+                                            transition: 'all 0.3s ease',
+                                            textTransform: 'capitalize'
+                                        }}
+                                    >
+                                        {tab}
+                                    </button>
+                                ))}
+                                <button style={{
+                                    background: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+                                    border: 'none',
+                                    padding: '0.75rem 1.5rem',
+                                    borderRadius: '20px',
+                                    cursor: 'pointer',
+                                    fontSize: '15px',
+                                    fontFamily: "'Inter', sans-serif",
+                                    fontWeight: '600',
+                                    color: '#fff',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    boxShadow: '0 4px 15px rgba(255,154,158,0.3)',
+                                    transition: 'all 0.3s ease'
+                                }}>
+                                    <Plus size={18} />
+                                    New Post
+                                </button>
+                            </nav>
+                        </div>
+                    </header>
+
+                    <main style={{
+                        maxWidth: '1400px',
+                        margin: '0 auto',
+                        padding: window.innerWidth < 768 ? '2rem 1rem' : '3rem 2rem'
+                    }}>
+                        <div style={{
+                            background: 'linear-gradient(135deg, rgba(255,228,181,0.4) 0%, rgba(255,212,212,0.4) 100%)',
+                            border: '2px dashed #d4a574',
+                            borderRadius: '16px',
+                            padding: window.innerWidth < 768 ? '1.5rem' : '2rem',
+                            marginBottom: window.innerWidth < 768 ? '2rem' : '3rem',
+                            position: 'relative',
+                            overflow: 'hidden'
+                        }}>
+                            <div style={{
+                                position: 'absolute',
+                                top: '-10px',
+                                right: '-10px',
+                                width: '100px',
+                                height: '100px',
+                                background: 'radial-gradient(circle, rgba(255,154,158,0.2) 0%, transparent 70%)',
+                                borderRadius: '50%'
+                            }} />
+                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', position: 'relative', flexDirection: window.innerWidth < 500 ? 'column' : 'row' }}>
+                                <div style={{ flexShrink: 0 }}>
+                                    <Sparkles size={window.innerWidth < 768 ? 32 : 40} color="#d4a574" style={{ marginTop: '0.25rem' }} />
+                                </div>
+                                <div>
+                                    <h3 style={{
+                                        margin: '0 0 0.75rem 0',
+                                        fontSize: window.innerWidth < 768 ? '20px' : '22px',
+                                        color: '#5d4e37',
+                                        fontFamily: "'Playfair Display', serif"
+                                    }}>
+                                        Welcome to Your Creative Community
+                                    </h3>
+                                    <p style={{
+                                        margin: '0 0 0.75rem 0',
+                                        fontSize: '15px',
+                                        lineHeight: '1.7',
+                                        color: '#6d5d4b',
+                                        fontFamily: "'Inter', sans-serif"
+                                    }}>
+                                        We've found crafters near you who share your passions! Connect with local makers, join workshops, 
+                                        and discover your next creative collaboration. From vintage ephemera to watercolor techniques, 
+                                        your perfect crafting buddy is just around the corner.
+                                    </p>
+                                    <div style={{
+                                        display: 'flex',
+                                        gap: '1rem',
+                                        flexWrap: 'wrap',
+                                        marginTop: '1rem'
+                                    }}>
+                                        <span style={{
+                                            background: 'rgba(255,255,255,0.6)',
+                                            padding: '0.5rem 1rem',
+                                            borderRadius: '12px',
+                                            fontSize: '13px',
+                                            fontFamily: "'Inter', sans-serif",
+                                            color: '#5d4e37',
+                                            border: '1px solid #f4e4d7'
+                                        }}>
+                                            🎨 Smart Matching
+                                        </span>
+                                        <span style={{
+                                            background: 'rgba(255,255,255,0.6)',
+                                            padding: '0.5rem 1rem',
+                                            borderRadius: '12px',
+                                            fontSize: '13px',
+                                            fontFamily: "'Inter', sans-serif",
+                                            color: '#5d4e37',
+                                            border: '1px solid #f4e4d7'
+                                        }}>
+                                            📍 Local Connections
+                                        </span>
+                                        <span style={{
+                                            background: 'rgba(255,255,255,0.6)',
+                                            padding: '0.5rem 1rem',
+                                            borderRadius: '12px',
+                                            fontSize: '13px',
+                                            fontFamily: "'Inter', sans-serif",
+                                            color: '#5d4e37',
+                                            border: '1px solid #f4e4d7'
+                                        }}>
+                                            ✨ Real Communities
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {activeTab === 'discover' && (
+                            <div>
+                                <div style={{
+                                    background: 'rgba(255,255,255,0.8)',
+                                    backdropFilter: 'blur(10px)',
+                                    borderRadius: '16px',
+                                    padding: '1.5rem',
+                                    marginBottom: '2rem',
+                                    border: '2px solid #f4e4d7',
+                                    boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+                                }}>
+                                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                        <Search size={24} color="#a0826d" />
+                                        <input
+                                            type="text"
+                                            placeholder="Search for techniques, materials, or crafters..."
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            style={{
+                                                flex: 1,
+                                                border: 'none',
+                                                background: 'transparent',
+                                                fontSize: '16px',
+                                                fontFamily: "'Inter', sans-serif",
+                                                color: '#5d4e37',
+                                                outline: 'none'
+                                            }}
+                                        />
+                                    </div>
+                                    <div style={{
+                                        display: 'flex',
+                                        gap: '0.75rem',
+                                        marginTop: '1rem',
+                                        flexWrap: 'wrap'
+                                    }}>
+                                        {craftTechniques.slice(0, 8).map(technique => (
+                                            <button
+                                                key={technique}
+                                                style={{
+                                                    background: 'linear-gradient(135deg, #fff 0%, #fef6f0 100%)',
+                                                    border: '1.5px solid #f4e4d7',
+                                                    padding: '0.5rem 1rem',
+                                                    borderRadius: '20px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '13px',
+                                                    fontFamily: "'Inter', sans-serif",
+                                                    color: '#6d5d4b',
+                                                    transition: 'all 0.2s ease'
+                                                }}
+                                            >
+                                                {technique}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <h2 style={{
+                                    fontSize: '28px',
+                                    marginBottom: '1.5rem',
+                                    color: '#5d4e37',
+                                    fontFamily: "'Playfair Display', serif"
+                                }}>
+                                    Your Creative Matches
+                                </h2>
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                                    gap: '1.5rem'
+                                }}>
+                                    {users.map((user) => (
+                                        <div
+                                            key={user.id}
+                                            style={{
+                                                background: 'rgba(255,255,255,0.9)',
+                                                backdropFilter: 'blur(10px)',
+                                                borderRadius: '20px',
+                                                padding: '2rem',
+                                                border: '2px solid #f4e4d7',
+                                                boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
+                                                transition: 'all 0.3s ease',
+                                                cursor: 'pointer',
+                                                position: 'relative',
+                                                overflow: 'hidden'
+                                            }}
+                                        >
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '1rem',
+                                                right: '1rem',
+                                                background: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+                                                color: '#fff',
+                                                padding: '0.5rem 0.75rem',
+                                                borderRadius: '12px',
+                                                fontSize: '13px',
+                                                fontWeight: '600',
+                                                fontFamily: "'Inter', sans-serif",
+                                                boxShadow: '0 4px 15px rgba(255,154,158,0.3)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.25rem'
+                                            }}>
+                                                <Star size={14} fill="#fff" />
+                                                {user.matchScore}%
+                                            </div>
+
+                                            <div style={{
+                                                width: '80px',
+                                                height: '80px',
+                                                background: user.color,
+                                                borderRadius: '16px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: '32px',
+                                                fontWeight: 'bold',
+                                                color: '#5d4e37',
+                                                marginBottom: '1rem',
+                                                fontFamily: "'Playfair Display', serif",
+                                                boxShadow: `0 4px 20px ${user.color}80`,
+                                                transform: 'rotate(-3deg)'
+                                            }}>
+                                                {user.avatar}
+                                            </div>
+
+                                            <h3 style={{
+                                                margin: '0 0 0.5rem 0',
+                                                fontSize: '22px',
+                                                color: '#5d4e37',
+                                                fontFamily: "'Playfair Display', serif"
+                                            }}>
+                                                {user.name}
+                                            </h3>
+                                            
+                                            <div style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.5rem',
+                                                marginBottom: '1rem',
+                                                color: '#8b7355',
+                                                fontSize: '14px',
+                                                fontFamily: "'Inter', sans-serif"
+                                            }}>
+                                                <MapPin size={16} />
+                                                {user.location} • {user.distance} away
+                                            </div>
+
+                                            <p style={{
+                                                margin: '0 0 1rem 0',
+                                                fontSize: '14px',
+                                                lineHeight: '1.6',
+                                                color: '#6d5d4b',
+                                                fontFamily: "'Inter', sans-serif",
+                                                fontStyle: 'italic'
+                                            }}>
+                                                "{user.bio}"
+                                            </p>
+
+                                            <div style={{
+                                                display: 'flex',
+                                                flexWrap: 'wrap',
+                                                gap: '0.5rem',
+                                                marginBottom: '1rem'
+                                            }}>
+                                                {user.interests.map(interest => (
+                                                    <span
+                                                        key={interest}
+                                                        style={{
+                                                            background: 'linear-gradient(135deg, #fef6f0 0%, #fff5f0 100%)',
+                                                            padding: '0.4rem 0.8rem',
+                                                            borderRadius: '12px',
+                                                            fontSize: '12px',
+                                                            color: '#6d5d4b',
+                                                            border: '1px solid #f4e4d7',
+                                                            fontFamily: "'Inter', sans-serif"
+                                                        }}
+                                                    >
+                                                        {interest}
+                                                    </span>
+                                                ))}
+                                            </div>
+
+                                            <div style={{
+                                                background: 'rgba(255,228,181,0.2)',
+                                                borderRadius: '12px',
+                                                padding: '0.75rem',
+                                                marginBottom: '1rem',
+                                                border: '1px dashed #d4a574'
+                                            }}>
+                                                <p style={{
+                                                    margin: '0 0 0.5rem 0',
+                                                    fontSize: '11px',
+                                                    fontWeight: '600',
+                                                    color: '#8b7355',
+                                                    textTransform: 'uppercase',
+                                                    letterSpacing: '0.5px',
+                                                    fontFamily: "'Inter', sans-serif"
+                                                }}>
+                                                    Recent Activity
+                                                </p>
+                                                {user.recent.map((activity, i) => (
+                                                    <p key={i} style={{
+                                                        margin: '0.25rem 0',
+                                                        fontSize: '13px',
+                                                        color: '#6d5d4b',
+                                                        fontFamily: "'Inter', sans-serif"
+                                                    }}>
+                                                        • {activity}
+                                                    </p>
+                                                ))}
+                                            </div>
+
+                                            <div style={{ display: 'flex', gap: '0.75rem' }}>
+                                                <button style={{
+                                                    flex: 1,
+                                                    background: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+                                                    border: 'none',
+                                                    padding: '0.75rem',
+                                                    borderRadius: '12px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '14px',
+                                                    fontWeight: '600',
+                                                    color: '#fff',
+                                                    fontFamily: "'Inter', sans-serif",
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    gap: '0.5rem',
+                                                    boxShadow: '0 4px 15px rgba(255,154,158,0.3)'
+                                                }}>
+                                                    <Mail size={16} />
+                                                    Connect
+                                                </button>
+                                                <button style={{
+                                                    background: 'rgba(255,212,212,0.3)',
+                                                    border: '1.5px solid #ffd4d4',
+                                                    padding: '0.75rem',
+                                                    borderRadius: '12px',
+                                                    cursor: 'pointer',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center'
+                                                }}>
+                                                    <Heart size={18} color="#ff9a9e" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'events' && (
+                            <div>
+                                <h2 style={{
+                                    fontSize: '28px',
+                                    marginBottom: '1.5rem',
+                                    color: '#5d4e37',
+                                    fontFamily: "'Playfair Display', serif"
+                                }}>
+                                    Local Craft Events
+                                </h2>
+                                <div style={{ display: 'grid', gap: '1.5rem' }}>
+                                    {localEvents.map((event, index) => (
+                                        <div
+                                            key={index}
+                                            style={{
+                                                background: 'rgba(255,255,255,0.9)',
+                                                backdropFilter: 'blur(10px)',
+                                                borderRadius: '20px',
+                                                padding: '2rem',
+                                                border: '2px solid #f4e4d7',
+                                                boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
+                                                display: 'grid',
+                                                gridTemplateColumns: window.innerWidth > 768 ? '2fr 1fr' : '1fr',
+                                                gap: '2rem',
+                                                alignItems: 'center'
+                                            }}
+                                        >
+                                            <div>
+                                                <h3 style={{
+                                                    margin: '0 0 0.75rem 0',
+                                                    fontSize: '24px',
+                                                    color: '#5d4e37',
+                                                    fontFamily: "'Playfair Display', serif"
+                                                }}>
+                                                    {event.title}
+                                                </h3>
+                                                <p style={{
+                                                    margin: '0 0 0.5rem 0',
+                                                    fontSize: '15px',
+                                                    color: '#8b7355',
+                                                    fontFamily: "'Inter', sans-serif",
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.5rem'
+                                                }}>
+                                                    📅 {event.date}
+                                                </p>
+                                                <p style={{
+                                                    margin: '0 0 1rem 0',
+                                                    fontSize: '15px',
+                                                    color: '#8b7355',
+                                                    fontFamily: "'Inter', sans-serif",
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.5rem'
+                                                }}>
+                                                    <MapPin size={16} />
+                                                    {event.location}
+                                                </p>
+                                                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                                    {event.interests.map(interest => (
+                                                        <span
+                                                            key={interest}
+                                                            style={{
+                                                                background: 'linear-gradient(135deg, #fef6f0 0%, #fff5f0 100%)',
+                                                                padding: '0.4rem 0.8rem',
+                                                                borderRadius: '12px',
+                                                                fontSize: '12px',
+                                                                color: '#6d5d4b',
+                                                                border: '1px solid #f4e4d7',
+                                                                fontFamily: "'Inter', sans-serif"
+                                                            }}
+                                                        >
+                                                            {interest}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <div style={{ textAlign: 'center' }}>
+                                                <div style={{
+                                                    background: 'linear-gradient(135deg, #d4e7d4 0%, #c4f1d4 100%)',
+                                                    borderRadius: '16px',
+                                                    padding: '1.5rem',
+                                                    marginBottom: '1rem'
+                                                }}>
+                                                    <div style={{
+                                                        fontSize: '36px',
+                                                        fontWeight: 'bold',
+                                                        color: '#5d4e37',
+                                                        fontFamily: "'Playfair Display', serif",
+                                                        marginBottom: '0.25rem'
+                                                    }}>
+                                                        {event.attendees}
+                                                    </div>
+                                                    <div style={{
+                                                        fontSize: '13px',
+                                                        color: '#6d5d4b',
+                                                        fontFamily: "'Inter', sans-serif",
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        gap: '0.5rem'
+                                                    }}>
+                                                        <Users size={14} />
+                                                        Attending
+                                                    </div>
+                                                </div>
+                                                <button style={{
+                                                    width: '100%',
+                                                    background: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+                                                    border: 'none',
+                                                    padding: '0.75rem',
+                                                    borderRadius: '12px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '14px',
+                                                    fontWeight: '600',
+                                                    color: '#fff',
+                                                    fontFamily: "'Inter', sans-serif",
+                                                    boxShadow: '0 4px 15px rgba(255,154,158,0.3)'
+                                                }}>
+                                                    Join Event
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'matches' && (
+                            <div>
+                                <div style={{
+                                    background: 'rgba(255,255,255,0.9)',
+                                    backdropFilter: 'blur(10px)',
+                                    borderRadius: '20px',
+                                    padding: '2.5rem',
+                                    border: '2px solid #f4e4d7',
+                                    boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
+                                    textAlign: 'center'
+                                }}>
+                                    <div style={{
+                                        fontSize: '64px',
+                                        marginBottom: '1rem'
+                                    }}>
+                                        🎯
+                                    </div>
+                                    <h2 style={{
+                                        margin: '0 0 1rem 0',
+                                        fontSize: '32px',
+                                        color: '#5d4e37',
+                                        fontFamily: "'Playfair Display', serif"
+                                    }}>
+                                        Your Top Matches
+                                    </h2>
+                                    <p style={{
+                                        margin: '0 0 2rem 0',
+                                        fontSize: '16px',
+                                        lineHeight: '1.7',
+                                        color: '#6d5d4b',
+                                        fontFamily: "'Inter', sans-serif",
+                                        maxWidth: '600px',
+                                        marginLeft: 'auto',
+                                        marginRight: 'auto'
+                                    }}>
+                                        We found <strong>2 amazing crafters</strong> within 1 mile who love 
+                                        <strong> Scrapbooking</strong> just like you! They're both in <strong>Berkeley</strong> 
+                                        and can't wait to meet fellow makers.
+                                    </p>
+                                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth > 768 ? '1fr 1fr' : '1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+                                        <div style={{
+                                            background: '#ffd4d4',
+                                            borderRadius: '16px',
+                                            padding: '2rem',
+                                            textAlign: 'center',
+                                            position: 'relative',
+                                            overflow: 'hidden'
+                                        }}>
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '0.75rem',
+                                                right: '0.75rem',
+                                                background: '#fff',
+                                                borderRadius: '8px',
+                                                padding: '0.25rem 0.5rem',
+                                                fontSize: '12px',
+                                                fontWeight: '600',
+                                                color: '#5d4e37',
+                                                fontFamily: "'Inter', sans-serif"
+                                            }}>
+                                                98% Match
+                                            </div>
+                                            <div style={{
+                                                fontSize: '48px',
+                                                fontWeight: 'bold',
+                                                color: '#5d4e37',
+                                                fontFamily: "'Playfair Display', serif",
+                                                marginBottom: '0.5rem'
+                                            }}>
+                                                Sarah
+                                            </div>
+                                            <div style={{
+                                                fontSize: '14px',
+                                                color: '#6d5d4b',
+                                                fontFamily: "'Inter', sans-serif",
+                                                marginBottom: '1rem'
+                                            }}>
+                                                0.5 mi away
+                                            </div>
+                                            <div style={{
+                                                background: 'rgba(255,255,255,0.5)',
+                                                borderRadius: '12px',
+                                                padding: '0.75rem',
+                                                fontSize: '13px',
+                                                color: '#5d4e37',
+                                                fontFamily: "'Inter', sans-serif",
+                                                lineHeight: '1.6'
+                                            }}>
+                                                Loves vintage ephemera & watercolor techniques
+                                            </div>
+                                        </div>
+                                        <div style={{
+                                            background: '#ffe4b5',
+                                            borderRadius: '16px',
+                                            padding: '2rem',
+                                            textAlign: 'center',
+                                            position: 'relative',
+                                            overflow: 'hidden'
+                                        }}>
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '0.75rem',
+                                                right: '0.75rem',
+                                                background: '#fff',
+                                                borderRadius: '8px',
+                                                padding: '0.25rem 0.5rem',
+                                                fontSize: '12px',
+                                                fontWeight: '600',
+                                                color: '#5d4e37',
+                                                fontFamily: "'Inter', sans-serif"
+                                            }}>
+                                                95% Match
+                                            </div>
+                                            <div style={{
+                                                fontSize: '48px',
+                                                fontWeight: 'bold',
+                                                color: '#5d4e37',
+                                                fontFamily: "'Playfair Display', serif",
+                                                marginBottom: '0.5rem'
+                                            }}>
+                                                Emily
+                                            </div>
+                                            <div style={{
+                                                fontSize: '14px',
+                                                color: '#6d5d4b',
+                                                fontFamily: "'Inter', sans-serif",
+                                                marginBottom: '1rem'
+                                            }}>
+                                                0.8 mi away
+                                            </div>
+                                            <div style={{
+                                                background: 'rgba(255,255,255,0.5)',
+                                                borderRadius: '12px',
+                                                padding: '0.75rem',
+                                                fontSize: '13px',
+                                                color: '#5d4e37',
+                                                fontFamily: "'Inter', sans-serif",
+                                                lineHeight: '1.6'
+                                            }}>
+                                                Expert in digital & traditional scrapbooking
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button style={{
+                                        background: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+                                        border: 'none',
+                                        padding: '1rem 2rem',
+                                        borderRadius: '12px',
+                                        cursor: 'pointer',
+                                        fontSize: '16px',
+                                        fontWeight: '600',
+                                        color: '#fff',
+                                        fontFamily: "'Inter', sans-serif",
+                                        boxShadow: '0 4px 15px rgba(255,154,158,0.3)',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem'
+                                    }}>
+                                        <Mail size={18} />
+                                        Message Your Matches
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    <style>{`
+                        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Crimson+Pro:wght@300;400;600&family=Inter:wght@300;400;600&display=swap');
+                        
+                        * {
+                            box-sizing: border-box;
+                        }
+                        
+                        @media (max-width: 768px) {
+                            body {
+                                font-size: 14px;
+                            }
+                        }
+                        
+                        svg {
+                            flex-shrink: 0;
+                            max-width: 100%;
+                            height: auto;
+                        }
+                        
+                        img {
+                            max-width: 100%;
+                            height: auto;
+                        }
+                    `}</style>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<GlueAndYouDemo />, document.getElementById('root'));
+    </script>
+</body>
+</html>
